@@ -1,6 +1,6 @@
 library(MASS)
 
-setwd('C:/Users/annie/OneDrive/ImportantFiles/projects/3. Finished/SpatioBless/code and data/RealDataAnalysis')
+setwd('~/RealDataAnalysis')
 source('FNS.R')
 
 data <- read.csv('V1_CityE_expand_AB.csv')
@@ -39,3 +39,4 @@ for(r in 1:R){
 Nb <- 100
 res <- stat_est(y, design=1, spill=1, A, nb, X)
 p_val <- 1-pnorm(res$ATE_est/sqrt(res$var_est))  
+
