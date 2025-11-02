@@ -17,7 +17,7 @@ EX <- 4; DX <- 1
 strengths <- seq(0,0.02,0.001)
 mis_specify = 0
 Nb <- 100
-source('~/spatio blessing/multi_para/test.R')
+source('~/multi_para/test.R')
 
 
 
