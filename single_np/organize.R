@@ -1,5 +1,4 @@
-# setwd('D:/ImportantFiles/projects/3. Finished/SpatioBless/code/res/single_np')
-setwd('~/spatio blessing/res/single_np')
+setwd('~、res/single_np')
 
 ############ parameters and functions
 Nsim <- 500
@@ -82,7 +81,7 @@ teststat <- function(spill, stren, design, mode, side, rho){
 }
 
 for(j in 1:3){
-filename <- 'D:/ImportantFiles/projects/3. Finished/SpatioBless/figs/'
+filename <- '~/figs/'
 filename <- paste0(filename,'single_np_mode',j,'_thre0.025.pdf')
 pdf(filename, height = 7 , width= 12)
 par(mai=c(0.6,0.6,0.3,0.3),omi=c(0.1,0.1,0,0),mfcol=c(3,6))
@@ -154,4 +153,5 @@ for(k in c(0.9,0.6,0.3))
   }
 dev.off()
 }
+
 
