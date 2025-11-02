@@ -1,0 +1,123 @@
+reformat <- function(x){
+  
+  y <- array(0,dim=c(R,M,N))
+  
+  for(i in 1:R){
+    
+    idx <- ((i-1)*M*N+1):(i*M*N)
+    y1 <- x[idx]
+    y1 <- matrix(y1, M, N)
+    y[i,,] <- y1
+  }
+  return(y)
+}
+
+########### statistics of interest
+OLS_ATE_est <- function(y,design,spill,A,X,nb){
+  
+  A_bar <- array(0,dim=c(R,M,N))
+  for(i in 1:R)
+    for(j in 1:M){
+      nb1 <- length(nb[i][[1]])
+      if(nb1>1){A_bar[i,j,] <- colMeans(as.matrix(A[nb[i][[1]],j,]))}
+      if(nb1==1){A_bar[i,j,] <- A[nb[i][[1]],j,]}
+    }
+  
+  if(spill==0|design==0){
+    
+    ## outcome coefficient estimation
+    coeff <- sapply(1:R,function(i){sapply(1:M,function(j){
+      xc <- cbind(rep(1,N), X[i,j,], A[i,j,])
+      return((ginv(t(xc)%*%xc)%*%t(xc)%*%matrix(y[i,j,],N,1))[,1])
+    })})
+    coeff <- array(coeff, dim=c(3,M,R))
+    alpha_hat <- t(matrix(coeff[1,,],M,R))
+    beta_hat <- t(matrix(coeff[2,,],M,R))
+    gamma_hat <- t(matrix(coeff[3,,],M,R))
+    theta_hat <- t(matrix(0,M,R))
+    ## state coefficient estimation
+    coeff <- sapply(1:R,function(i){sapply(1:(M-1),function(j){
+      xc <- cbind(rep(1,N), X[i,j,], A[i,j,])
+      return((ginv(t(xc)%*%xc)%*%t(xc)%*%matrix(X[i,j+1,],N,1))[,1])
+    })})
+    coeff <- array(coeff, dim=c(3,M-1,R))
+    alpha_X_hat <- t(matrix(coeff[1,,],M-1,R))
+    beta_X_hat <- t(matrix(coeff[2,,],M-1,R))
+    gamma_X_hat <- t(matrix(coeff[3,,],M-1,R))
+    theta_X_hat <- t(matrix(0,M-1,R))
+    
+  }else{
+    
+    ## outcome coefficient estimation
+    coeff <- sapply(1:R,function(i){sapply(1:M,function(j){
+      xc <- cbind(rep(1,N), X[i,j,], A[i,j,],A_bar[i,j,])
+      return((ginv(t(xc)%*%xc)%*%t(xc)%*%matrix(y[i,j,],N,1))[,1])
+    })})
+    coeff <- array(coeff, dim=c(4,M,R))
+    alpha_hat <- t(matrix(coeff[1,,],M,R))
+    beta_hat <- t(matrix(coeff[2,,],M,R))
+    gamma_hat <- t(matrix(coeff[3,,],M,R))
+    theta_hat <- t(matrix(coeff[4,,],M,R))
+    ## state coefficient estimation
+    coeff <- sapply(1:R,function(i){sapply(1:(M-1),function(j){
+      xc <- cbind(rep(1,N), X[i,j,], A[i,j,],A_bar[i,j,])
+      return((ginv(t(xc)%*%xc)%*%t(xc)%*%matrix(X[i,j+1,],N,1))[,1])
+    })})
+    coeff <- array(coeff, dim=c(4,M-1,R))
+    alpha_X_hat <- t(matrix(coeff[1,,],M-1,R))
+    beta_X_hat <- t(matrix(coeff[2,,],M-1,R))
+    gamma_X_hat <- t(matrix(coeff[3,,],M-1,R))
+    theta_X_hat <- t(matrix(coeff[4,,],M-1,R))
+    
+  }
+  
+  ## compute ATE
+  {
+    c_hat <- c()
+    for(k in 1:(M-1)){
+      for(tau in (k+1):M){
+        if(tau==k+1){b <- beta_hat[,tau]}
+        if(tau>k+1){
+          p <- 1
+          for(j in (k+1):(tau-1)){p <- p*beta_X_hat[,j]}
+          b <- b + beta_hat[,tau] * p
+        }
+      }
+      c_hat <- cbind(c_hat,b)
+    }
+    ATE_hat <- sum(gamma_hat+theta_hat) + sum(c_hat * (gamma_X_hat+theta_X_hat))
+  }
+  
+  res <- list(ATE_hat, alpha_X_hat, beta_X_hat, gamma_X_hat, theta_X_hat,
+              alpha_hat, beta_hat, gamma_hat, theta_hat)
+  names(res) <- c('ATE_hat','alpha_X_hat', 'beta_X_hat', 'gamma_X_hat', 'theta_X_hat',
+                  'alpha_hat', 'beta_hat', 'gamma_hat', 'theta_hat')
+  
+  return(res)
+}
+
+stat_est <- function(y,design,spill,A,nb,X){
+
+  ### estimate
+  ols_res <- OLS_ATE_est(y,design,spill,A,X,nb)
+
+  ### bootstrap
+  ATE_b <- c()
+  for(i_b in 1:Nb){
+    set.seed(i_b)
+    print(i_b)
+    idx_b <- sample(1:N, N, replace = TRUE)
+    X_b <- X[,,idx_b]; y_b <- y[,,idx_b]; A_b <- A[,,idx_b]
+    ols_res_b <- OLS_ATE_est(y_b,design,spill,A_b,X_b,nb)
+    ATE_b <- c(ATE_b, ols_res_b$ATE_hat)
+  }
+  var_hat <- var(ATE_b)
+  res <- list(ols_res$ATE_hat, var_hat); names(res) <- c('ATE_est','var_est')
+  
+  return(res)
+}
+
+
+
+
+
