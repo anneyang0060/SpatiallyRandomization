@@ -1,5 +1,4 @@
-# setwd('D:/ImportantFiles/projects/3. Finished/SpatioBless/code/res/single_para')
-setwd('~/spatio blessing/res/single_para')
+setwd('~/res/single_para')
 
 ############ parameters and functions
 
@@ -96,8 +95,7 @@ strengths <- seq(0, 0.02, 0.0025)
 strengths <- strengths*100
 
 for(j in 1:3){
-filename <- 'D:/ImportantFiles/projects/3. Finished/SpatioBless/figs/'
-# filename <- '~/spatio blessing/figs/'
+filename <- '~/figs/'
 filename <- paste0(filename,'single_para_mode',j,'.pdf')
 pdf(filename, height = 7 , width= 12)
 par(mai=c(0.6,0.6,0.3,0.3),omi=c(0.1,0.1,0,0),mfcol=c(3,6))
@@ -192,8 +190,7 @@ ratio_c <- function(R,rho,r,c,mode){
 c <- 9
 r <- 4
 Rs <- 50:300
-filename <- 'D:/ImportantFiles/projects/3. Finished/SpatioBless/figs/illustration.pdf'
-# filename <- '~/spatio blessing/figs/illustration.pdf'
+filename <- '~/figs/illustration.pdf'
 pdf(filename, height = 3 , width= 9)
 par(mai=c(0.8,0.8,0.2,0.2),omi=c(0.1,0.1,0,0),mfrow=c(1,3))
 for(mode in c(1,2,3)){
@@ -212,20 +209,5 @@ for(mode in c(1,2,3)){
 }
 dev.off()
 
-# ######### generate fig
-# tau <- seq(0,10,0.01)
-# d1 <- 1
-# d2 <- 3*d1
-# p1 <- 1-pnorm(qnorm(0.95)-tau/d1)
-# p2 <- 1-pnorm(qnorm(0.95)-tau/d2)
-# 
-# 
-# # filename <- 'D:/ImportantFiles/projects/3. Finished/SpatioBless/figs/illustration_power_compare.pdf'
-# filename <- '~/spatio blessing/figs/illustration_power_compare.pdf'
-# pdf(filename, height = 4 , width= 6)
-# par(mai=c(0.8,0.8,0.2,0.2),omi=c(0.1,0.1,0,0),mfrow=c(1,1))
-# plot(tau,p1,type='l',xlab = 'signal strength',ylab = 'power',
-#      col='red')
-# lines(tau,p2,col='blue')
-# dev.off()
+
 
