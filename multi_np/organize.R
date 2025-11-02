@@ -1,5 +1,5 @@
 ############# table 5
-setwd('~/spatio blessing/res/multi_para')
+setwd('~/res/multi_para')
 Nsim <- 500
 N_struct <- 3
 
@@ -36,7 +36,7 @@ for(s in c(3,4,6))
   }
 emp1 <- round(emp1,3)
 
-setwd('~/spatio blessing/res/multi_np')
+setwd('~/res/multi_np')
 mse <- function(design, side, rho){
   
   filename <- paste0('side',side,'_rho',rho,'_thre0.075.Rdata')
@@ -76,7 +76,7 @@ cbind(emp1, emp2)
 
 ############ figure 6 in the main
 
-filename <- 'D:/ImportantFiles/projects/3. Finished/SpatioBless/figs/'
+filename <- '~/figs/'
 filename <- paste0(filename,'multi_spill1_thre0.075.pdf')
 
 pdf(filename, height = 7 , width= 12)
@@ -142,7 +142,7 @@ for(k in c(0.9,0.6,0.3))
 
 # strengths <- c(0, 0.005, 0.01, 0.015, 0.02)*100
 strengths <- seq(0,0.02,0.0025)*100
-setwd('D:/ImportantFiles/projects/3. Finished/SpatioBless/code/res/multi_np')
+setwd(~/res/multi_np')
 N_struct <- 3 #3
 teststat <- function( stren, design,side, rho){
   
@@ -198,4 +198,5 @@ for(k in c(0.9,0.6,0.3))
     lines(strengths,c[,1],lty=3,col='blue')
   }
 dev.off()
+
 
