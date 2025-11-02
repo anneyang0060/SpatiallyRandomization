@@ -36,7 +36,8 @@ for(r in 1:R){
   nb[[r]] <- nb1
 }
 
-Nb <- 100
+Nb <- 200
 res <- stat_est(y, design=1, spill=1, A, nb, X)
 p_val <- 1-pnorm(res$ATE_est/sqrt(res$var_est))  
+
 
