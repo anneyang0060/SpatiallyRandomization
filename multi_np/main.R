@@ -18,5 +18,5 @@ d_w <- 11
 # 0, 0.005,0.01,0.02,0.05
 
 N_b <- 100
-source('~/spatio blessing/multi_np/test.R')
+source('~/multi_np/test.R')
 
