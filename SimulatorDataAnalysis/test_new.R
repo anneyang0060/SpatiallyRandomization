@@ -2,7 +2,7 @@ library(MASS)
 library(foreach)
 library(doParallel)
 
-setwd('~/spatio blessing/SimulatorDataAnalysis')
+setwd('~/SimulatorDataAnalysis')
 source('FNSnew.R')
 
 
@@ -154,3 +154,4 @@ for(design in c(0,1))
   }
 
 mse[3:4]/mse[1:2]
+
