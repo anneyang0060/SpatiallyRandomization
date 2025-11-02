@@ -1,0 +1,41 @@
+library(MASS)
+
+setwd('C:/Users/annie/OneDrive/ImportantFiles/projects/3. Finished/SpatioBless/code and data/RealDataAnalysis')
+source('FNS.R')
+
+data <- read.csv('V1_CityE_expand_AB.csv')
+M <- length(unique(data$time))
+R <- length(unique(data$region))
+N <- length(unique(data$date))
+adj_mat <- matrix(c(0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+          1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+          1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+          0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0,
+          0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0,
+          0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1,
+          0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0),R,R)
+
+
+A <- reformat(data$is_exp)
+X <- reformat(data$cnt_call)
+y <- reformat(data$gmv)
+
+nb <- list() 
+for(r in 1:R){
+  nb1 <- which(adj_mat[r,]!=0)
+  nb[[r]] <- nb1
+}
+
+Nb <- 100
+res <- stat_est(y, design=1, spill=1, A, nb, X)
+p_val <- 1-pnorm(res$ATE_est/sqrt(res$var_est))  
