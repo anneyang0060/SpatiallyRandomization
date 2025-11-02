@@ -15,6 +15,7 @@ M <- 1
 v_mis <- 0.5
 strengths <- seq(0, 0.02, 0.0025)
 
-source('~/spatio blessing/single_para/test.R')
+source('~/single_para/test.R')
+
 
 
