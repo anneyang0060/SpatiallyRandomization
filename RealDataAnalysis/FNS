@@ -117,7 +117,33 @@ stat_est <- function(y,design,spill,A,nb,X){
   return(res)
 }
 
-
+fitted_resid <- function(y,design,spill,A,X,nb){
+  
+  ols_res <- OLS_ATE_est(y,design,spill,A,X,nb)
+  
+  A_bar <- array(0,dim=c(R,M,N))
+  for(i in 1:R)
+    for(j in 1:M){
+      nb1 <- length(nb[i][[1]])
+      if(nb1>1){A_bar[i,j,] <- colMeans(as.matrix(A[nb[i][[1]],j,]))}
+      if(nb1==1){A_bar[i,j,] <- A[nb[i][[1]],j,]}
+    }
+  
+  alpha_X_hat <- ols_res$alpha_X_hat # matrix R M-1
+  beta_X_hat <- ols_res$beta_X_hat
+  gamma_X_hat <- ols_res$gamma_X_hat
+  theta_X_hat <- ols_res$theta_X_hat 
+  
+  y_hat <- array(0, dim = c(R, M-1, N))
+  for(i in 1:N){
+    y_hat[,,i] <- (alpha_X_hat + X[,2:M,i]*beta_X_hat + 
+                     A[,2:M,i]*gamma_X_hat + A_bar[,2:M,i]*theta_X_hat)
+  }
+  
+  eps_hat <- y[,2:M,]-y_hat
+  
+  return(eps_hat)
+}
 
 
 
