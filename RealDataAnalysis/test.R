@@ -1,9 +1,9 @@
 library(MASS)
 
-setwd('C:/Users/annie/OneDrive/ImportantFiles/projects/3. Finished/SpatioBless/code and data/RealDataAnalysis')
+setwd('~/RealDataAnalysis')
 source('FNS.R')
 
-data <- read.csv('V1_CityE_expand_AB.csv')
+data <- read.csv('synthetic_data.csv') # read.csv('V1_CityE_expand_AB.csv')
 M <- length(unique(data$time))
 R <- length(unique(data$region))
 N <- length(unique(data$date))
@@ -25,7 +25,6 @@ adj_mat <- matrix(c(0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
           0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1,
           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0),R,R)
 
-
 A <- reformat(data$is_exp)
 X <- reformat(data$cnt_call)
 y <- reformat(data$gmv)
@@ -37,10 +36,7 @@ for(r in 1:R){
 }
 
 eps_hat <- fitted_resid(y, design=1, spill=1, A, X, nb)
-eps_hat_city <- apply(eps_hat, MARGIN=c(2,3), sum)
 y_hat <- y[,2:M,]-eps_hat
-y_hat_city <- apply(y_hat, MARGIN=c(2,3), sum)
-y_city <- apply(y[,2:M,], MARGIN=c(2,3), sum)
 
 color <- c('lightblue','lightgray','lightgreen','lightpink','lightsalmon','thistle','lightsteelblue')
 
@@ -59,7 +55,7 @@ for(r in c(1,11)){
        xlab = 'y', ylab = 'y_hat')
   lines(0:max(y1),0:max(y1),lwd=2)
   
-  hist(y1, main=r)
+  # hist(y1, main=r)
 }
 dev.off()
 
